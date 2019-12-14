@@ -16,8 +16,7 @@ func Routes() *chi.Mux {
 			route.Get("/", controllers.FetchMovies)
 			route.Get("/{movieID}", controllers.FetchMovie)
 
-			route.Group(func(route chi.Router) {
-				route.Use(middlewares.IsAuthenticated)
+			route.With(middlewares.IsAuthenticated).Group(func(route chi.Router) {
 				route.Post("/", controllers.AddMovie)
 				route.Put("/{movieID}", controllers.UpdateMovie)
 				route.Delete("/{movieID}", controllers.DeleteMovie)
@@ -28,8 +27,7 @@ func Routes() *chi.Mux {
 			route.Get("/", controllers.FetchTheaters)
 			route.Get("/{theaterID}", controllers.FetchTheater)
 
-			route.Group(func(route chi.Router) {
-				route.Use(middlewares.IsAuthenticated)
+			route.With(middlewares.IsAuthenticated).Group(func(route chi.Router) {
 				route.Post("/", controllers.AddTheater)
 				route.Put("/{theaterID}", controllers.UpdateTheater)
 				route.Delete("/{theaterID}", controllers.DeleteTheater)
