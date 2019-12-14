@@ -22,13 +22,20 @@ type Theater struct {
 func FetchTheaters(skip int64, limit int64) (theaters []Theater, total int64, err error) {
 	options := options.Find().SetSkip(skip).SetLimit(limit)
 
-	cursor, err := databases.Mongo.Collection("theater").Find(context.Background(), bson.M{}, options)
+	cursor, err := databases.Mongo.Collection("theater").Find(
+		context.Background(),
+		bson.M{},
+		options,
+	)
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	total, err = databases.Mongo.Collection("theater").CountDocuments(context.Background(), bson.M{})
+	total, err = databases.Mongo.Collection("theater").CountDocuments(
+		context.Background(),
+		bson.M{},
+	)
 
 	if err != nil {
 		return nil, 0, err
@@ -53,7 +60,11 @@ func FetchTheaters(skip int64, limit int64) (theaters []Theater, total int64, er
 
 // FetchTheater return a theater
 func FetchTheater(objectID primitive.ObjectID) (theater *Theater, err error) {
-	err = databases.Mongo.Collection("theater").FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&theater)
+	err = databases.Mongo.Collection("theater").FindOne(
+		context.Background(),
+		bson.M{
+			"_id": objectID,
+		}).Decode(&theater)
 
 	if err != nil {
 		return nil, err
@@ -87,7 +98,11 @@ func UpdateTheater(objectID primitive.ObjectID, t Theater) error {
 
 // DeleteTheater delete a theater
 func DeleteTheater(objectID primitive.ObjectID) error {
-	_, err := databases.Mongo.Collection("theater").DeleteOne(context.Background(), bson.M{"_id": objectID})
+	_, err := databases.Mongo.Collection("theater").DeleteOne(
+		context.Background(),
+		bson.M{
+			"_id": objectID,
+		})
 
 	return err
 }

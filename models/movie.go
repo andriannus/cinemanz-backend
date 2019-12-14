@@ -33,13 +33,20 @@ type Movie struct {
 func FetchMovies(skip int64, limit int64) (movies []Movie, total int64, err error) {
 	options := options.Find().SetSkip(skip).SetLimit(limit)
 
-	cursor, err := databases.Mongo.Collection("movie").Find(context.Background(), bson.M{}, options)
+	cursor, err := databases.Mongo.Collection("movie").Find(
+		context.Background(),
+		bson.M{},
+		options,
+	)
 
 	if err != nil {
 		return nil, 0, err
 	}
 
-	total, err = databases.Mongo.Collection("movie").CountDocuments(context.Background(), bson.M{})
+	total, err = databases.Mongo.Collection("movie").CountDocuments(
+		context.Background(),
+		bson.M{},
+	)
 
 	if err != nil {
 		return nil, 0, err
@@ -64,7 +71,11 @@ func FetchMovies(skip int64, limit int64) (movies []Movie, total int64, err erro
 
 // FetchMovie return a movie
 func FetchMovie(objectID primitive.ObjectID) (movie *Movie, err error) {
-	err = databases.Mongo.Collection("movie").FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&movie)
+	err = databases.Mongo.Collection("movie").FindOne(
+		context.Background(),
+		bson.M{
+			"_id": objectID,
+		}).Decode(&movie)
 
 	if err != nil {
 		return nil, err
@@ -107,7 +118,11 @@ func UpdateMovie(objectID primitive.ObjectID, m Movie) error {
 
 // DeleteMovie delete a movie
 func DeleteMovie(objectID primitive.ObjectID) error {
-	_, err := databases.Mongo.Collection("movie").DeleteOne(context.Background(), bson.M{"_id": objectID})
+	_, err := databases.Mongo.Collection("movie").DeleteOne(
+		context.Background(),
+		bson.M{
+			"_id": objectID,
+		})
 
 	return err
 }

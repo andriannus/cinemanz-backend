@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -31,15 +30,13 @@ func FetchMovies(w http.ResponseWriter, r *http.Request) {
 	movies, total, err := models.FetchMovies(skip, limit)
 
 	if err != nil {
-		fmt.Print(err)
-		utils.ResponseError(w, 500, "Something wrong")
-		return
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
+	} else {
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
+			"data":  movies,
+			"total": total,
+		})
 	}
-
-	utils.ResponseJSON(w, 200, map[string]interface{}{
-		"data":  movies,
-		"total": total,
-	})
 }
 
 // FetchMovie return movie
@@ -50,9 +47,9 @@ func FetchMovie(w http.ResponseWriter, r *http.Request) {
 	movie, err := models.FetchMovie(objectID)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadGateway, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]interface{}{
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
 			"data": movie,
 		})
 	}
@@ -69,9 +66,11 @@ func AddMovie(w http.ResponseWriter, r *http.Request) {
 	err := models.AddMovie(movie)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Add Movie"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Add Movie",
+		})
 	}
 }
 
@@ -89,9 +88,11 @@ func UpdateMovie(w http.ResponseWriter, r *http.Request) {
 	err := models.UpdateMovie(objectID, movie)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Update Movie"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Update Movie",
+		})
 	}
 }
 
@@ -103,8 +104,10 @@ func DeleteMovie(w http.ResponseWriter, r *http.Request) {
 	err := models.DeleteMovie(objectID)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Delete Movie"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Delete Movie",
+		})
 	}
 }

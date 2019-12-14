@@ -30,14 +30,13 @@ func FetchTheaters(w http.ResponseWriter, r *http.Request) {
 	theaters, total, err := models.FetchTheaters(skip, limit)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
-		return
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
+	} else {
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
+			"data":  theaters,
+			"total": total,
+		})
 	}
-
-	utils.ResponseJSON(w, 200, map[string]interface{}{
-		"data":  theaters,
-		"total": total,
-	})
 }
 
 // FetchTheater return theaters
@@ -48,9 +47,9 @@ func FetchTheater(w http.ResponseWriter, r *http.Request) {
 	theater, err := models.FetchTheater(objectID)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]interface{}{
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
 			"data": theater,
 		})
 	}
@@ -67,9 +66,11 @@ func AddTheater(w http.ResponseWriter, r *http.Request) {
 	err := models.AddTheater(theater)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Add Theater"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Add Theater",
+		})
 	}
 }
 
@@ -87,9 +88,11 @@ func UpdateTheater(w http.ResponseWriter, r *http.Request) {
 	err := models.UpdateTheater(objectID, theater)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Update Theater"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Update Theater",
+		})
 	}
 }
 
@@ -101,8 +104,10 @@ func DeleteTheater(w http.ResponseWriter, r *http.Request) {
 	err := models.DeleteTheater(objectID)
 
 	if err != nil {
-		utils.ResponseError(w, 500, "Something wrong")
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
 	} else {
-		utils.ResponseJSON(w, 200, map[string]string{"message": "Successfully Delete Theater"})
+		utils.ResponseJSON(w, http.StatusOK, map[string]string{
+			"message": "Successfully Delete Theater",
+		})
 	}
 }

@@ -46,7 +46,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	claims := models.MyClaims{
 		StandardClaims: jwt.StandardClaims{
-			Issuer:    "CinemaNz",
 			ExpiresAt: time.Now().Add(time.Duration(1) * time.Hour).Unix(),
 		},
 		Username:  user.Username,
@@ -59,10 +58,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		utils.ResponseError(w, http.StatusBadRequest, err.Error())
-		return
+	} else {
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
+			"token": signedToken,
+		})
 	}
-
-	utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
-		"token": signedToken,
-	})
 }
