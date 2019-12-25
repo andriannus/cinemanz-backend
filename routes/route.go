@@ -11,6 +11,8 @@ import (
 func Routes() *chi.Mux {
 	route := chi.NewRouter()
 
+	route.Use(middlewares.Cors().Handler)
+
 	route.Route("/v1", func(route chi.Router) {
 		route.Route("/movies", func(route chi.Router) {
 			route.Get("/", controllers.FetchMovies)
