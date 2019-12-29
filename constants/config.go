@@ -11,4 +11,6 @@ const (
 	LimitPerPage = 25
 	// SkipPerPage skip data per page
 	SkipPerPage = 0
+	// DateFormat set date format
+	DateFormat = "2006-01-02"
 )

@@ -16,6 +16,8 @@ func Routes() *chi.Mux {
 	route.Route("/v1", func(route chi.Router) {
 		route.Route("/movies", func(route chi.Router) {
 			route.Get("/", controllers.FetchMovies)
+			route.Get("/now-playing", controllers.FetchNowPlayingMovies)
+			route.Get("/upcoming", controllers.FetchUpcomingMovies)
 			route.Get("/{movieID}", controllers.FetchMovie)
 
 			route.With(middlewares.IsAuthenticated).Group(func(route chi.Router) {

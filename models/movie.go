@@ -69,6 +69,107 @@ func FetchMovies(skip int64, limit int64) (movies []Movie, total int64, err erro
 	return movies, total, nil
 }
 
+// FetchNowPlayingMovies return all movie
+func FetchNowPlayingMovies(skip int64, limit int64, date string) (movies []Movie, total int64, err error) {
+	options := options.Find().SetSkip(skip).SetLimit(limit)
+
+	filter := bson.M{
+		"$and": []interface{}{
+			bson.M{
+				"start": bson.M{
+					"$lte": date,
+				},
+			},
+			bson.M{
+				"end": bson.M{
+					"$gte": date,
+				},
+			},
+		},
+	}
+
+	cursor, err := databases.Mongo.Collection("movie").Find(
+		context.Background(),
+		filter,
+		options,
+	)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	total, err = databases.Mongo.Collection("movie").CountDocuments(
+		context.Background(),
+		filter,
+	)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		var movie Movie
+
+		err := cursor.Decode(&movie)
+
+		if err != nil {
+			return nil, 0, err
+		}
+
+		movies = append(movies, movie)
+	}
+
+	return movies, total, nil
+}
+
+// FetchUpcomingMovies return all movie
+func FetchUpcomingMovies(skip int64, limit int64, date string) (movies []Movie, total int64, err error) {
+	options := options.Find().SetSkip(skip).SetLimit(limit)
+
+	filter := bson.M{
+		"start": bson.M{
+			"$gte": date,
+		},
+	}
+
+	cursor, err := databases.Mongo.Collection("movie").Find(
+		context.Background(),
+		filter,
+		options,
+	)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	total, err = databases.Mongo.Collection("movie").CountDocuments(
+		context.Background(),
+		filter,
+	)
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		var movie Movie
+
+		err := cursor.Decode(&movie)
+
+		if err != nil {
+			return nil, 0, err
+		}
+
+		movies = append(movies, movie)
+	}
+
+	return movies, total, nil
+}
+
 // FetchMovie return a movie
 func FetchMovie(objectID primitive.ObjectID) (movie *Movie, err error) {
 	err = databases.Mongo.Collection("movie").FindOne(

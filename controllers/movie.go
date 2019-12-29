@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
+	"time"
 
 	"github.com/go-chi/chi"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,19 +15,53 @@ import (
 
 // FetchMovies return movies
 func FetchMovies(w http.ResponseWriter, r *http.Request) {
-	skip, err := strconv.ParseInt(r.URL.Query().Get("skip"), 10, 64)
-
-	if err != nil {
-		skip = constants.SkipPerPage
-	}
-
-	limit, err := strconv.ParseInt(r.URL.Query().Get("limit"), 10, 64)
-
-	if err != nil {
-		limit = constants.LimitPerPage
-	}
+	skip, limit := utils.GetSkipAndLimit(r)
 
 	movies, total, err := models.FetchMovies(skip, limit)
+
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
+	} else {
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
+			"data":  movies,
+			"total": total,
+		})
+	}
+}
+
+// FetchNowPlayingMovies return movies
+func FetchNowPlayingMovies(w http.ResponseWriter, r *http.Request) {
+	skip, limit := utils.GetSkipAndLimit(r)
+
+	selectedDate := r.URL.Query().Get("date")
+
+	if selectedDate == "" {
+		selectedDate = time.Now().Format(constants.DateFormat)
+	}
+
+	movies, total, err := models.FetchNowPlayingMovies(skip, limit, selectedDate)
+
+	if err != nil {
+		utils.ResponseError(w, http.StatusBadRequest, err.Error())
+	} else {
+		utils.ResponseJSON(w, http.StatusOK, map[string]interface{}{
+			"data":  movies,
+			"total": total,
+		})
+	}
+}
+
+// FetchUpcomingMovies return movies
+func FetchUpcomingMovies(w http.ResponseWriter, r *http.Request) {
+	skip, limit := utils.GetSkipAndLimit(r)
+
+	selectedDate := r.URL.Query().Get("date")
+
+	if selectedDate == "" {
+		selectedDate = time.Now().Format(constants.DateFormat)
+	}
+
+	movies, total, err := models.FetchUpcomingMovies(skip, limit, selectedDate)
 
 	if err != nil {
 		utils.ResponseError(w, http.StatusBadRequest, err.Error())
