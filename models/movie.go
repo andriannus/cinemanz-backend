@@ -12,7 +12,7 @@ import (
 
 // Movie struct for movie
 type Movie struct {
-	ID         primitive.ObjectID `json:"_id" bson:"_id"`
+	ID         primitive.ObjectID `json:"id" bson:"_id"`
 	Title      string             `json:"title" bson:"title"`
 	Genre      []string           `json:"genre" bson:"genre"`
 	Minutes    int                `json:"minutes" bson:"minutes"`
