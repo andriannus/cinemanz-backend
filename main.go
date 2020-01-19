@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"cinemanz/constants"
-	"cinemanz/databases"
 	"cinemanz/middleware"
 
 	_movieHttpDeliver "cinemanz/movie/delivery/http"
@@ -23,8 +25,18 @@ import (
 	_userUcase "cinemanz/user/usecase"
 )
 
+func init() {
+	viper.SetConfigFile(`config.json`)
+
+	err := viper.ReadInConfig()
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
 func main() {
-	dbConn, err := databases.MongoSetup()
+	dbConn, err := dbSetup()
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -49,11 +61,31 @@ func main() {
 	userUcase := _userUcase.NewUserUsecase(userRepo)
 	_userHttpDeliver.NewUserHandler(route, userUcase)
 
-	address := fmt.Sprintf(":%d", constants.Port)
+	address := fmt.Sprintf(":%d", viper.GetInt(`app.port`))
 
 	err = http.ListenAndServe(address, route)
 
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+}
+
+func dbSetup() (*mongo.Database, error) {
+	dbURI := viper.GetString(`database.mongo.uri`)
+	dbName := viper.GetString(`database.mongo.name`)
+
+	options := options.Client().ApplyURI(dbURI)
+	client, err := mongo.NewClient(options)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = client.Connect(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return client.Database(dbName), nil
 }

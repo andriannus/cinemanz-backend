@@ -1,0 +1,11 @@
+{
+  "app": {
+    "port": 9000
+  },
+  "database": {
+    "mongo": {
+      "uri": "mongodb://localhost:27017",
+      "name": "cinemanz"
+    }
+  }
+}
