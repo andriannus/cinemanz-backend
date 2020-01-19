@@ -48,7 +48,7 @@ func NewMovieHandler(route *chi.Mux, us movie.Usecase) {
 	})
 }
 
-// FetchAll will fetch the all articles
+// FetchAll will fetch the all movies
 func (m *MovieHandler) FetchAll(w http.ResponseWriter, r *http.Request) {
 	skip, limit := getSkipAndLimit(r)
 
@@ -64,9 +64,9 @@ func (m *MovieHandler) FetchAll(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// FetchNowPlaying will fetch the all now playing movies
 func (m *MovieHandler) FetchNowPlaying(w http.ResponseWriter, r *http.Request) {
 	skip, limit := getSkipAndLimit(r)
-
 	selectedDate := r.URL.Query().Get("date")
 
 	if selectedDate == "" {
@@ -85,6 +85,7 @@ func (m *MovieHandler) FetchNowPlaying(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// FetchUpcoming will fetch the all upcoming movies
 func (m *MovieHandler) FetchUpcoming(w http.ResponseWriter, r *http.Request) {
 	skip, limit := getSkipAndLimit(r)
 	selectedDate := r.URL.Query().Get("date")
@@ -108,6 +109,7 @@ func (m *MovieHandler) FetchUpcoming(w http.ResponseWriter, r *http.Request) {
 // FetchByID will fetch movie by given id
 func (m *MovieHandler) FetchByID(w http.ResponseWriter, r *http.Request) {
 	movieID := chi.URLParam(r, "movieID")
+
 	movie, err := m.MUsecase.FetchByID(movieID)
 
 	if err != nil {

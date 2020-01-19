@@ -29,7 +29,7 @@ func NewUserHandler(route *chi.Mux, us user.Usecase) {
 	})
 }
 
-// Login will
+// Login will do authentication
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var dataLogin models.DataLogin
 
@@ -46,7 +46,7 @@ func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Register will
+// Register will register new user
 func (u *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	user := models.User{
 		ID: primitive.NewObjectID(),
