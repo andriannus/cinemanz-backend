@@ -1,6 +1,8 @@
 package theater
 
-import "cinemanz/models"
+import (
+	"cinemanz/models"
+)
 
 // Usecase represent the theater's usecases
 type Usecase interface {

@@ -1,6 +1,8 @@
 package movie
 
-import "cinemanz/models"
+import (
+	"cinemanz/models"
+)
 
 // Usecase represent the movie's usecases
 type Usecase interface {

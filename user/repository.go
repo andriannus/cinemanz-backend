@@ -1,6 +1,8 @@
 package user
 
-import "cinemanz/models"
+import (
+	"cinemanz/models"
+)
 
 // Repository represent the user's repositories contract
 type Repository interface {

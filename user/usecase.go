@@ -1,6 +1,8 @@
 package user
 
-import "cinemanz/models"
+import (
+	"cinemanz/models"
+)
 
 // Usecase represent the user's usecases
 type Usecase interface {
