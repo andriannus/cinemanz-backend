@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"cinemanz/config/middleware/auth"
 	"cinemanz/helper/response"
+	"cinemanz/middleware"
 	"cinemanz/models"
 	"cinemanz/theater"
 )
@@ -30,11 +30,13 @@ func NewTheaterHandler(route *chi.Mux, us theater.Usecase) {
 		TUsecase: us,
 	}
 
+	middL := middleware.InitMiddleware()
+
 	route.Route("/v1/theaters", func(route chi.Router) {
 		route.Get("/", handler.FetchAll)
 		route.Get("/{theaterID}", handler.FetchByID)
 
-		route.With(auth.IsAuthenticated).Group(func(route chi.Router) {
+		route.With(middL.IsAuthenticated).Group(func(route chi.Router) {
 			route.Post("/", handler.Store)
 			route.Put("/{theaterID}", handler.Update)
 			route.Delete("/{theaterID}", handler.Delete)
@@ -42,7 +44,7 @@ func NewTheaterHandler(route *chi.Mux, us theater.Usecase) {
 	})
 }
 
-// FetchAll will fetch the all articles
+// FetchAll will fetch the all theaters
 func (t *TheaterHandler) FetchAll(w http.ResponseWriter, r *http.Request) {
 	skip, err := strconv.ParseInt(r.URL.Query().Get("skip"), 10, 64)
 
@@ -102,7 +104,7 @@ func (t *TheaterHandler) Store(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Update will update article by given id and request body
+// Update will update theater by given id and request body
 func (t *TheaterHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var theater *models.Theater
 

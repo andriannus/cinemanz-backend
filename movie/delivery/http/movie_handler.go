@@ -9,8 +9,8 @@ import (
 	"github.com/go-chi/chi"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"cinemanz/config/middleware/auth"
 	"cinemanz/helper/response"
+	"cinemanz/middleware"
 	"cinemanz/models"
 	"cinemanz/movie"
 )
@@ -32,13 +32,15 @@ func NewMovieHandler(route *chi.Mux, us movie.Usecase) {
 		MUsecase: us,
 	}
 
+	middL := middleware.InitMiddleware()
+
 	route.Route("/v1/movies", func(route chi.Router) {
 		route.Get("/", handler.FetchAll)
 		route.Get("/now-playing", handler.FetchNowPlaying)
 		route.Get("/upcoming", handler.FetchUpcoming)
 		route.Get("/{movieID}", handler.FetchByID)
 
-		route.With(auth.IsAuthenticated).Group(func(route chi.Router) {
+		route.With(middL.IsAuthenticated).Group(func(route chi.Router) {
 			route.Post("/", handler.Store)
 			route.Put("/{movieID}", handler.Update)
 			route.Delete("/{movieID}", handler.Delete)
