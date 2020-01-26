@@ -21,47 +21,58 @@ func NewMovieUsecase(m movie.Repository) movie.Usecase {
 func (m *movieUsecase) FetchAll(skip int64, limit int64) (movies []models.Movie, total int64, err error) {
 	movies, total, err = m.movieRepo.FetchAll(skip, limit)
 
-	return movies, total, err
+	return
 }
 
 func (m *movieUsecase) FetchNowPlaying(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error) {
 	movies, total, err = m.movieRepo.FetchNowPlaying(skip, limit, date)
 
-	return movies, total, err
+	return
 }
 
 func (m *movieUsecase) FetchUpcoming(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error) {
 	movies, total, err = m.movieRepo.FetchUpcoming(skip, limit, date)
 
-	return movies, total, err
+	return
 }
 
 func (m *movieUsecase) FetchByID(id string) (movie *models.Movie, err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
 
 	movie, err = m.movieRepo.FetchByID(objectID)
 
-	return movie, err
+	return
 }
 
-func (m *movieUsecase) Store(movie models.Movie) (err error) {
-	err = m.movieRepo.Store(movie)
+func (m *movieUsecase) Store(movie models.Movie) error {
+	err := m.movieRepo.Store(movie)
 
 	return err
 }
 
-func (m *movieUsecase) Update(id string, movie *models.Movie) (err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+func (m *movieUsecase) Update(id string, movie *models.Movie) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
 
 	movie.ID = objectID
-
 	err = m.movieRepo.Update(movie)
 
 	return err
 }
 
-func (m *movieUsecase) Delete(id string) (err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+func (m *movieUsecase) Delete(id string) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
 
 	err = m.movieRepo.Delete(objectID)
 

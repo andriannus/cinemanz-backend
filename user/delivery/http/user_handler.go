@@ -32,9 +32,7 @@ func NewUserHandler(route *chi.Mux, us user.Usecase) {
 // Login will do authentication
 func (u *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var dataLogin models.DataLogin
-
 	json.NewDecoder(r.Body).Decode(&dataLogin)
-
 	token, err := u.UUsecase.Login(dataLogin)
 
 	if err != nil {
@@ -51,9 +49,7 @@ func (u *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	user := models.User{
 		ID: primitive.NewObjectID(),
 	}
-
 	json.NewDecoder(r.Body).Decode(&user)
-
 	err := u.UUsecase.Register(user)
 
 	if err != nil {

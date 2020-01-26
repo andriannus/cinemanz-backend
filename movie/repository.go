@@ -12,7 +12,7 @@ type Repository interface {
 	FetchNowPlaying(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error)
 	FetchUpcoming(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error)
 	FetchByID(id primitive.ObjectID) (movie *models.Movie, err error)
-	Store(m models.Movie) (err error)
-	Update(movie *models.Movie) (err error)
-	Delete(id primitive.ObjectID) (err error)
+	Store(m models.Movie) error
+	Update(movie *models.Movie) error
+	Delete(id primitive.ObjectID) error
 }

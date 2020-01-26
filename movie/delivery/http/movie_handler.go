@@ -51,7 +51,6 @@ func NewMovieHandler(route *chi.Mux, us movie.Usecase) {
 // FetchAll will fetch the all movies
 func (m *MovieHandler) FetchAll(w http.ResponseWriter, r *http.Request) {
 	skip, limit := getSkipAndLimit(r)
-
 	movies, total, err := m.MUsecase.FetchAll(skip, limit)
 
 	if err != nil {
@@ -109,7 +108,6 @@ func (m *MovieHandler) FetchUpcoming(w http.ResponseWriter, r *http.Request) {
 // FetchByID will fetch movie by given id
 func (m *MovieHandler) FetchByID(w http.ResponseWriter, r *http.Request) {
 	movieID := chi.URLParam(r, "movieID")
-
 	movie, err := m.MUsecase.FetchByID(movieID)
 
 	if err != nil {
@@ -126,9 +124,7 @@ func (m *MovieHandler) Store(w http.ResponseWriter, r *http.Request) {
 	movie := models.Movie{
 		ID: primitive.NewObjectID(),
 	}
-
 	json.NewDecoder(r.Body).Decode(&movie)
-
 	err := m.MUsecase.Store(movie)
 
 	if err != nil {
@@ -143,11 +139,8 @@ func (m *MovieHandler) Store(w http.ResponseWriter, r *http.Request) {
 // Update will update article by given id and request body
 func (m *MovieHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var movie *models.Movie
-
-	movieID := chi.URLParam(r, "movieID")
-
 	json.NewDecoder(r.Body).Decode(&movie)
-
+	movieID := chi.URLParam(r, "movieID")
 	err := m.MUsecase.Update(movieID, movie)
 
 	if err != nil {
@@ -162,7 +155,6 @@ func (m *MovieHandler) Update(w http.ResponseWriter, r *http.Request) {
 // Delete will delete movie by given id
 func (m *MovieHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	movieID := chi.URLParam(r, "movieID")
-
 	err := m.MUsecase.Delete(movieID)
 
 	if err != nil {

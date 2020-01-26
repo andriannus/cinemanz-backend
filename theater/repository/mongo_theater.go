@@ -25,7 +25,6 @@ func NewMongoTheaterRepository(db *mongo.Database) theater.Repository {
 
 func (m *mongoTheaterRepo) FetchAll(skip int64, limit int64) (theaters []models.Theater, total int64, err error) {
 	options := options.Find().SetSkip(skip).SetLimit(limit)
-
 	cursor, err := m.DB.Collection("theater").Find(
 		context.Background(),
 		bson.M{},
@@ -49,7 +48,6 @@ func (m *mongoTheaterRepo) FetchAll(skip int64, limit int64) (theaters []models.
 
 	for cursor.Next(context.Background()) {
 		var theater models.Theater
-
 		err := cursor.Decode(&theater)
 
 		if err != nil {
@@ -76,15 +74,14 @@ func (m *mongoTheaterRepo) FetchByID(id primitive.ObjectID) (theater *models.The
 	return theater, nil
 }
 
-func (m *mongoTheaterRepo) Store(t models.Theater) (err error) {
-
-	_, err = m.DB.Collection("theater").InsertOne(context.Background(), t)
+func (m *mongoTheaterRepo) Store(t models.Theater) error {
+	_, err := m.DB.Collection("theater").InsertOne(context.Background(), t)
 
 	return err
 }
 
-func (m *mongoTheaterRepo) Update(t *models.Theater) (err error) {
-	_, err = m.DB.Collection("theater").UpdateOne(
+func (m *mongoTheaterRepo) Update(t *models.Theater) error {
+	_, err := m.DB.Collection("theater").UpdateOne(
 		context.Background(),
 		bson.M{"_id": t.ID},
 		bson.M{"$set": bson.M{
@@ -96,8 +93,8 @@ func (m *mongoTheaterRepo) Update(t *models.Theater) (err error) {
 	return err
 }
 
-func (m *mongoTheaterRepo) Delete(id primitive.ObjectID) (err error) {
-	_, err = m.DB.Collection("theater").DeleteOne(
+func (m *mongoTheaterRepo) Delete(id primitive.ObjectID) error {
+	_, err := m.DB.Collection("theater").DeleteOne(
 		context.Background(),
 		bson.M{
 			"_id": id,

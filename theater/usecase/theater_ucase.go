@@ -21,35 +21,46 @@ func NewTheaterUsecase(t theater.Repository) theater.Usecase {
 func (t *theaterUsecase) FetchAll(skip int64, limit int64) (theaters []models.Theater, total int64, err error) {
 	theaters, total, err = t.theaterRepo.FetchAll(skip, limit)
 
-	return theaters, total, err
+	return
 }
 
 func (t *theaterUsecase) FetchByID(id string) (theater *models.Theater, err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
 
 	theater, err = t.theaterRepo.FetchByID(objectID)
 
-	return theater, err
+	return
 }
 
-func (t *theaterUsecase) Store(theater models.Theater) (err error) {
-	err = t.theaterRepo.Store(theater)
+func (t *theaterUsecase) Store(theater models.Theater) error {
+	err := t.theaterRepo.Store(theater)
 
 	return err
 }
 
-func (t *theaterUsecase) Update(id string, theater *models.Theater) (err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+func (t *theaterUsecase) Update(id string, theater *models.Theater) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
 
 	theater.ID = objectID
-
 	err = t.theaterRepo.Update(theater)
 
 	return err
 }
 
-func (t *theaterUsecase) Delete(id string) (err error) {
-	objectID, _ := primitive.ObjectIDFromHex(id)
+func (t *theaterUsecase) Delete(id string) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
 
 	err = t.theaterRepo.Delete(objectID)
 

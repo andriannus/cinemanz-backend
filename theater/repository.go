@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	FetchAll(skip int64, limit int64) (theaters []models.Theater, total int64, err error)
 	FetchByID(id primitive.ObjectID) (theater *models.Theater, err error)
-	Store(t models.Theater) (err error)
-	Update(theater *models.Theater) (err error)
-	Delete(id primitive.ObjectID) (err error)
+	Store(t models.Theater) error
+	Update(theater *models.Theater) error
+	Delete(id primitive.ObjectID) error
 }

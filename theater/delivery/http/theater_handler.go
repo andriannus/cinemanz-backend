@@ -73,7 +73,6 @@ func (t *TheaterHandler) FetchAll(w http.ResponseWriter, r *http.Request) {
 // FetchByID will fetch theater by given id
 func (t *TheaterHandler) FetchByID(w http.ResponseWriter, r *http.Request) {
 	theaterID := chi.URLParam(r, "theaterID")
-
 	theater, err := t.TUsecase.FetchByID(theaterID)
 
 	if err != nil {
@@ -90,9 +89,7 @@ func (t *TheaterHandler) Store(w http.ResponseWriter, r *http.Request) {
 	theater := models.Theater{
 		ID: primitive.NewObjectID(),
 	}
-
 	json.NewDecoder(r.Body).Decode(&theater)
-
 	err := t.TUsecase.Store(theater)
 
 	if err != nil {
@@ -107,11 +104,8 @@ func (t *TheaterHandler) Store(w http.ResponseWriter, r *http.Request) {
 // Update will update theater by given id and request body
 func (t *TheaterHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var theater *models.Theater
-
-	theaterID := chi.URLParam(r, "theaterID")
-
 	json.NewDecoder(r.Body).Decode(&theater)
-
+	theaterID := chi.URLParam(r, "theaterID")
 	err := t.TUsecase.Update(theaterID, theater)
 
 	if err != nil {
@@ -126,7 +120,6 @@ func (t *TheaterHandler) Update(w http.ResponseWriter, r *http.Request) {
 // Delete will delete theater by given id
 func (t *TheaterHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	theaterID := chi.URLParam(r, "theaterID")
-
 	err := t.TUsecase.Delete(theaterID)
 
 	if err != nil {

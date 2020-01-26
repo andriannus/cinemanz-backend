@@ -26,10 +26,9 @@ func NewMongoMovieRepository(db *mongo.Database) movie.Repository {
 func (m *mongoMovieRepo) FetchAll(skip int64, limit int64) (movies []models.Movie, total int64, err error) {
 	filter := bson.M{}
 	options := options.Find().SetSkip(skip).SetLimit(limit)
-
 	movies, total, err = m.fetchMovies(filter, options)
 
-	return movies, total, err
+	return
 }
 
 func (m *mongoMovieRepo) FetchNowPlaying(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error) {
@@ -48,10 +47,9 @@ func (m *mongoMovieRepo) FetchNowPlaying(skip int64, limit int64, date string) (
 		},
 	}
 	options := options.Find().SetSkip(skip).SetLimit(limit)
-
 	movies, total, err = m.fetchMovies(filter, options)
 
-	return movies, total, err
+	return
 }
 
 func (m *mongoMovieRepo) FetchUpcoming(skip int64, limit int64, date string) (movies []models.Movie, total int64, err error) {
@@ -61,10 +59,9 @@ func (m *mongoMovieRepo) FetchUpcoming(skip int64, limit int64, date string) (mo
 		},
 	}
 	options := options.Find().SetSkip(skip).SetLimit(limit)
-
 	movies, total, err = m.fetchMovies(filter, options)
 
-	return movies, total, err
+	return
 }
 
 func (m *mongoMovieRepo) FetchByID(id primitive.ObjectID) (movie *models.Movie, err error) {
@@ -81,14 +78,14 @@ func (m *mongoMovieRepo) FetchByID(id primitive.ObjectID) (movie *models.Movie, 
 	return movie, nil
 }
 
-func (m *mongoMovieRepo) Store(mv models.Movie) (err error) {
-	_, err = m.DB.Collection("movie").InsertOne(context.Background(), mv)
+func (m *mongoMovieRepo) Store(mv models.Movie) error {
+	_, err := m.DB.Collection("movie").InsertOne(context.Background(), mv)
 
 	return err
 }
 
-func (m *mongoMovieRepo) Update(movie *models.Movie) (err error) {
-	_, err = m.DB.Collection("movie").UpdateOne(
+func (m *mongoMovieRepo) Update(movie *models.Movie) error {
+	_, err := m.DB.Collection("movie").UpdateOne(
 		context.Background(),
 		bson.M{"_id": movie.ID},
 		bson.M{"$set": bson.M{
@@ -111,8 +108,8 @@ func (m *mongoMovieRepo) Update(movie *models.Movie) (err error) {
 	return err
 }
 
-func (m *mongoMovieRepo) Delete(id primitive.ObjectID) (err error) {
-	_, err = m.DB.Collection("movie").DeleteOne(
+func (m *mongoMovieRepo) Delete(id primitive.ObjectID) error {
+	_, err := m.DB.Collection("movie").DeleteOne(
 		context.Background(),
 		bson.M{
 			"_id": id,
@@ -145,7 +142,6 @@ func (m *mongoMovieRepo) fetchMovies(filter primitive.M, options *options.FindOp
 
 	for cursor.Next(context.Background()) {
 		var movie models.Movie
-
 		err := cursor.Decode(&movie)
 
 		if err != nil {
