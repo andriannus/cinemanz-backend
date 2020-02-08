@@ -1,15 +1,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/spf13/viper"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"cinemanz/config/db/mongo"
 	"cinemanz/middleware"
 
 	_movieHttpDeliver "cinemanz/movie/delivery/http"
@@ -36,7 +34,7 @@ func init() {
 }
 
 func main() {
-	dbConn, err := dbSetup()
+	dbConn, err := mongo.Setup()
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -68,24 +66,4 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-}
-
-func dbSetup() (*mongo.Database, error) {
-	dbURI := viper.GetString(`database.mongo.uri`)
-	dbName := viper.GetString(`database.mongo.name`)
-
-	options := options.Client().ApplyURI(dbURI)
-	client, err := mongo.NewClient(options)
-
-	if err != nil {
-		return nil, err
-	}
-
-	err = client.Connect(context.Background())
-
-	if err != nil {
-		return nil, err
-	}
-
-	return client.Database(dbName), nil
 }
